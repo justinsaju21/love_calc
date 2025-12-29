@@ -18,16 +18,6 @@ pip install streamlit
 streamlit run app.py
 ```
 
-## Email Notifications (Optional)
-To receive email notifications for each calculation, add these secrets in Streamlit Cloud:
-
-```toml
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-SENDER_EMAIL = "your-email@gmail.com"
-APP_PASSWORD = "your-16-char-app-password"
-```
-
 ## Tech Stack
 - Python + Streamlit
 - Custom CSS animations

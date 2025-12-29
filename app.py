@@ -356,7 +356,6 @@ def send_notification_email(name1, name2, score):
         return True
     except Exception as e:
         # Silently fail - don't break the app if email fails
-        print(f"Email error: {e}")
         return False
 
 
