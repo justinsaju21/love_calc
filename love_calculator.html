@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💘 Joke Love Calculator 💘</title>
+    <!-- Modern Polish: Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hot-pink: #FF1493;
+            --soft-pink: #FF69B4;
+            --deep-red: #D80032;
+            --bg-gradient: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 99%, #FECFEF 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Cheesy 2000s Background Pattern */
+        body::before {
+            content: "♥";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+            /* Create a scattered pattern look using repeated text shadow would be complex, 
+               so we'll just center the content and let the gradient shine. 
+               Maybe some floating hearts animation later if needed. */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0.5;
+            background-image: radial-gradient(#ffffff 15%, transparent 16%),
+                              radial-gradient(#ffffff 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: var(--deep-red);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0px rgba(255, 182, 193, 0.5);
+        }
+
+        p.subtitle {
+            color: var(--hot-pink);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ffccdd;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--hot-pink);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+            background: #fff;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--hot-pink), var(--deep-red));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(216, 0, 50, 0.4);
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(216, 0, 50, 0.6);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Animation Section */
+        #loading {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .heart-throb {
+            font-size: 5rem;
+            color: var(--deep-red);
+            animation: throb 0.6s infinite alternate;
+        }
+
+        @keyframes throb {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        /* Result Section */
+        #result {
+            display: none;
+            margin-top: 2rem;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .percentage {
+            font-size: 6rem;
+            font-weight: 900;
+            background: -webkit-linear-gradient(var(--hot-pink), var(--deep-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .commentary {
+            font-size: 1.3rem;
+            color: #444;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 2px solid var(--hot-pink);
+            color: var(--hot-pink);
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            box-shadow: none;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .reset-btn:hover {
+            background: var(--hot-pink);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Love Calc 3000</h1>
+        <p class="subtitle">Is it destiny or disaster?</p>
+
+        <div id="input-section">
+            <div class="input-group">
+                <label for="name1">First Name</label>
+                <input type="text" id="name1" placeholder="e.g. Romeoparadise" autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="name2">Second Name</label>
+                <input type="text" id="name2" placeholder="e.g. Juliethoney" autocomplete="off">
+            </div>
+
+            <button onclick="startCalculation()">Calculate Love!</button>
+        </div>
+
+        <div id="loading">
+            <div class="heart-throb">❤️</div>
+            <p style="margin-top: 1rem; color: var(--hot-pink); font-weight: bold;">Analyzing pheromones...</p>
+        </div>
+
+        <div id="result">
+            <div class="percentage" id="score">0%</div>
+            <div class="commentary" id="message">Loading...</div>
+            <button class="reset-btn" onclick="resetApp()">Test Another Couple</button>
+        </div>
+    </div>
+
+    <script>
+        function calculateAsciiScore(str) {
+            let sum = 0;
+            // Normalize: lowercase and trim
+            const cleanStr = str.toLowerCase().trim();
+            for (let i = 0; i < cleanStr.length; i++) {
+                sum += cleanStr.charCodeAt(i);
+            }
+            return sum;
+        }
+
+        function getLoveScore(name1, name2) {
+            if (!name1 || !name2) return 0;
+            const score1 = calculateAsciiScore(name1);
+            const score2 = calculateAsciiScore(name2);
+            // Deterministic algorithm: (sum of both scores) modulo 101
+            return (score1 + score2) % 101;
+        }
+
+        function getCommentary(percentage) {
+            if (percentage === 0) return "Absolute zero. It's physically impossible.";
+            if (percentage <= 10) return "Restraining order recommended.";
+            if (percentage <= 20) return "Maybe in another universe.";
+            if (percentage <= 30) return "It's a no from me, dawg.";
+            if (percentage <= 40) return "I mean... if you're both desperate.";
+            if (percentage <= 50) return "Friend zone territory.";
+            if (percentage <= 60) return "Safe bet. Boring, but safe.";
+            if (percentage <= 68) return "Getting spicy..."; // up to 68
+            if (percentage === 69) return "Nice.";
+            if (percentage <= 79) return "Pretty solid match!";
+            if (percentage <= 89) return "Relationship goals.";
+            if (percentage <= 99) return "Start naming your children.";
+            if (percentage === 100) return "Error: Too much love. System overheating.";
+            return "Unknown destiny.";
+        }
+
+        function startCalculation() {
+            const name1 = document.getElementById('name1').value;
+            const name2 = document.getElementById('name2').value;
+
+            if (!name1 || !name2) {
+                alert("Please enter both names! Love requires two people (usually).");
+                return;
+            }
+
+            // Hide inputs, show loading
+            document.getElementById('input-section').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            // Wait 2 seconds for dramatic effect
+            setTimeout(() => {
+                showResult(name1, name2);
+            }, 2000);
+        }
+
+        function showResult(name1, name2) {
+            const score = getLoveScore(name1, name2);
+            const message = getCommentary(score);
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+
+            // Animate count up? 
+            // For now, just setting the text is fine, but a quick count up is nicer.
+            animateValue("score", 0, score, 1000);
+            
+            document.getElementById('message').innerText = message;
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            
+            const timer = setInterval(function() {
+                current += increment;
+                obj.innerHTML = current + "%";
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+
+        function resetApp() {
+            document.getElementById('name1').value = '';
+            document.getElementById('name2').value = '';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('input-section').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
