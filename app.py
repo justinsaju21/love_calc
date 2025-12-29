@@ -316,14 +316,16 @@ def send_notification_email(name1, name2, score):
     """Send email notification with the love calculation results."""
     try:
         # Read credentials from Streamlit secrets
-        smtp_server = st.secrets.get("SMTP_SERVER", "smtp.gmail.com")
-        smtp_port = st.secrets.get("SMTP_PORT", 587)
-        sender_email = st.secrets.get("SENDER_EMAIL")
-        app_password = st.secrets.get("APP_PASSWORD")
+        # Support both [email] section and flat format
+        email_sec = st.secrets.get("email", {})
+        sender_email = email_sec.get("username", st.secrets.get("SENDER_EMAIL"))
+        app_password = email_sec.get("password", st.secrets.get("APP_PASSWORD"))
+        
+        smtp_server = email_sec.get("smtp_server", st.secrets.get("SMTP_SERVER", "smtp.gmail.com"))
+        smtp_port = email_sec.get("smtp_port", st.secrets.get("SMTP_PORT", 587))
         recipient_email = "justinsaju100@gmail.com"
         
         if not sender_email or not app_password:
-            # Secrets not configured, silently skip
             return False
         
         # Create message
